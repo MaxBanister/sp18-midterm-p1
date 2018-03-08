@@ -2,33 +2,53 @@
 
 /* Add the dependencies you're testing */
 const Crowdsale = artifacts.require("./Crowdsale.sol");
+const Queue = artifacts.require("./Queue.sol");
+const Token = artifacts.require("./Token.sol");
 // YOUR CODE HERE
 
 contract('testTemplate', function(accounts) {
-	/* Define your constant variables and instantiate constantly changing 
+	/* Define your constant variables and instantiate constantly changing
 	 * ones
 	 */
 	const args = {};
-	let x, y, z;
-	// YOUR CODE HERE
+	let crowdsale, queue, token;
 
 	/* Do something before every `describe` method */
 	beforeEach(async function() {
-		// YOUR CODE HERE
+		crowdsale = await Crowdsale.new(100, 1, 20, 2);
 	});
 
-	/* Group test cases together 
+	/* Group test cases together
 	 * Make sure to provide descriptive strings for method arguements and
 	 * assert statements
 	 */
-	describe('Your string here', function() {
-		it("your string here", async function() {
-			// YOUR CODE HERE
+	describe('~ Crowdsale Works ~', function() {
+		it("Intial tokens is set properly", async function() {
+			assert(crowdsale.token.totalSupply() == 100);
 		});
-		// YOUR CODE HERE
-	});
 
-	describe('Your string here', function() {
-		// YOUR CODE HERE
+		it("Owner can mint and burn tokens", async function() {
+
+		});
+
+		it("Buyer can join the queue", async function() {
+
+		});
+
+		it("Buyer can make purchase if other people in queue", async function() {
+
+		});
+
+		it("The owner should be set", async function() {
+
+		});
+
+		it("The owner should be set", async function() {
+
+		});
+
+		it("The owner should be set", async function() {
+
+		});
 	});
 });
