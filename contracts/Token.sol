@@ -59,19 +59,28 @@ contract Token is ERC20Interface {
 	}
 	function burn(uint tokens) public onlyOwner() returns (bool success) {
 		if (balances[msg.sender] >= tokens) {
+			require(balances[msg.sender] >= tokens);
 			balances[msg.sender] = balances[msg.sender] - tokens;
-			require(balances[msg.sender] >= 0);
+			require(totalSupply >= tokens);
 			totalSupply -= tokens;
-			require(totalSupply >= 0);
 			return true;
 		}
 		return false;
 	}
 	function mint(uint tokens) public onlyOwner() {
+		uint prevSupply = tokenSupply;
 		totalSupply += tokens;
+		require(totalSupply > prevSupply);
 	}
-	function assignBalance(address person, uint tokens) public onlyOwner() {
-		balances[person] = balances[person] + tokens;
+	function purchase(address person, uint tokens) public onlyOwner() {
+		uint prevBalance = balances[person];
+		balances[person] = prevBalance + tokens;
+		require(balances[person] > prevBalance);
+	}
+	function refund(address person, uint tokens) public onlyOwner() {
+		uint prevBalance = balances[person];
+		balances[person] = prevBalance - tokens;
+		require(balances[person] < prevBalance);
 	}
 	function() public payable {
 		revert();
