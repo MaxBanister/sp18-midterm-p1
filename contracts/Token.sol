@@ -13,9 +13,19 @@ contract Token is ERC20Interface {
 	event Approval(address indexed tokenOwner, address index spender, uint tokens);
 
 	uint totalSupply = 5000;
+	address owner;
 	mapping (address => uint) balances;
 	mapping(address => mapping (address => uint256)) allowed;
 
+	modifier onlyOwner {
+		require(msg.sender == owner);
+		_;
+	}
+
+	function Token(uint supply) {
+		owner = msg.sender;
+		totalSupply = supply;
+	}
 	function totalSupply() public constant returns (uint) {
 		return totalSupply;
 	}
@@ -46,6 +56,22 @@ contract Token is ERC20Interface {
 			return true;
 		}
 		return false;
+	}
+	function burn(uint tokens) public onlyOwner() returns (bool success) {
+		if (balances[msg.sender] >= tokens) {
+			balances[msg.sender] = balances[msg.sender] - tokens;
+			require(balances[msg.sender] >= 0);
+			totalSupply -= tokens;
+			require(totalSupply >= 0);
+			return true;
+		}
+		return false;
+	}
+	function mint(uint tokens) public onlyOwner() {
+		totalSupply += tokens;
+	}
+	function assignBalance(address person, uint tokens) public onlyOwner() {
+		balances[person] = balances[person] + tokens;
 	}
 	function() public payable {
 		revert();
