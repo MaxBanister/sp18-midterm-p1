@@ -72,15 +72,18 @@ contract Token is ERC20Interface {
 		totalSupply += tokens;
 		require(totalSupply > prevSupply);
 	}
-	function purchase(address person, uint tokens) public onlyOwner() {
+	function purchase(address person, uint tokens) public onlyOwner() returns (bool success) {
 		uint prevBalance = balances[person];
 		balances[person] = prevBalance + tokens;
 		require(balances[person] > prevBalance);
+		return true;
 	}
-	function refund(address person, uint tokens) public onlyOwner() {
-		uint prevBalance = balances[person];
-		balances[person] = prevBalance - tokens;
-		require(balances[person] < prevBalance);
+	function refund(address person, uint tokens) public onlyOwner() returns (bool success) {
+		if (balances[person] >= tokens) {
+			balances[person] = balances[person] - tokens;
+			return true;
+		}
+		return false;
 	}
 	function() public payable {
 		revert();
