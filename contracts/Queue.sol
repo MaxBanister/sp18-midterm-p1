@@ -12,8 +12,8 @@ contract Queue {
 	address[] queue;
 	uint8 size = 5;
 	uint8 pointer;
-    uint limit;
-    uint first;
+  uint public limit;
+  uint first;
 
 	/* Add events */
   event Ejected(address);
