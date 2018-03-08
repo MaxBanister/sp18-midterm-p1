@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 import './Queue.sol';
-//import './Token.sol';
+import './Token.sol';
 
 /**
  * @title Crowdsale
@@ -13,13 +13,13 @@ contract Crowdsale {
 
 	function Crowdsale(uint _initalTokens, uint _xrate, uint _timeLimit, uint _queueTime) public payable {
 	    owner = msg.sender;
-	    totalSupply = _initalTokens;
+	    //totalSupply = _initalTokens;
 	    xrate = _xrate;
 	    startTime = now;
 	    endTime = startTime + _timeLimit;
 	    saleQueue = new Queue(_queueTime);
 	    coinsSold = 0;
-	    //token =
+	    token = new Token(_initialTokens);
 	    funds = 0;
 	}
 
@@ -30,13 +30,13 @@ contract Crowdsale {
 
     /* State variables */
     address public owner;
-    uint public totalSupply;
+    //uint public totalSupply;
     uint public coinsSold;
     uint public xrate;
     uint public startTime;
     uint public endTime;
     Queue public saleQueue;
-    //Token public token;
+    Token public token;
     uint private funds;
 
     /* Modifiers */
@@ -47,17 +47,12 @@ contract Crowdsale {
     event TokenPurchase(address buyer);
     event TokenRefund(address buyer);
 
-    function mintTokens(uint amount) ownerOnly() returns (bool) {
-        //return token.addTokens(amount);
+    function mintTokens(uint amount) ownerOnly() {
+        token.mint(amount);
     }
 
-    function burnTokens(uint amount) ownerOnly() returns (bool) {
-        /*
-        if (enough tokens available) {
-            return token.removeTokens(amount);
-        }
-        return false;
-        */
+    function burnTokens(uint amount) ownerOnly() returns (bool)  {
+        return token.burn(amount);
     }
 
     function receiveFunds() ownerOnly() {
@@ -67,9 +62,9 @@ contract Crowdsale {
     }
 
     function buyTokens(uint amount) public payable saleOpen() {
-        require (saleQueue.getFirst() == msg.sender && !saleQueue.empty());
-        if (amount <= msg.value * xrate) {
-            //token. add amount to msg.sender
+        require(saleQueue.getFirst() == msg.sender && saleQueue.canBuy());
+        if (amount <= msg.value * xrate && token.purchase(msg.sender, amount)) {
+
             coinsSold += amount;
             funds += msg.value;
 
@@ -77,19 +72,19 @@ contract Crowdsale {
             saleQueue.dequeue();
         }
         else {
-            //refund value??
+            revert();
         }
     }
 
     function refundTokens(uint amount) public saleOpen() {
-        //if token.getamt (msg.sender) <= amount && amount > 0
-        //remove amount from balances in token
+        if (token.refund(msg.sender, amount)) {
 
-        coinsSold -= amount;
-        msg.sender.transfer(amount * xrate);
-        funds -= amount * xrate;
+            coinsSold -= amount;
+            msg.sender.transfer(amount * xrate);
+            funds -= amount * xrate;
 
-        TokenRefund(msg.sender);
+            TokenRefund(msg.sender);
+        }
     }
 
     function joinQueue() public saleOpen() returns (bool){
