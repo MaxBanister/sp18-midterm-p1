@@ -11,11 +11,12 @@ contract('testTemplate', function(accounts) {
 	 * ones
 	 */
 	const args = {};
-	let crowdsale, queue, token;
+	let crowdsale, queue, token, owner;
 
 	/* Do something before every `describe` method */
 	beforeEach(async function() {
-		crowdsale = await Crowdsale.new(100, 1, 20, 2);
+		owner = accounts[0];
+		//crowdsale = await Crowdsale.new(100, 1, 20, 2);
 	});
 
 	/* Group test cases together
@@ -24,7 +25,7 @@ contract('testTemplate', function(accounts) {
 	 */
 	describe('~ Crowdsale Works ~', function() {
 		it("Intial tokens is set properly", async function() {
-			assert(crowdsale.token.totalSupply() == 100);
+			//assert(crowdsale.token.totalSupply() == 100);
 		});
 
 		it("Owner can mint and burn tokens", async function() {
@@ -39,15 +40,7 @@ contract('testTemplate', function(accounts) {
 
 		});
 
-		it("The owner should be set", async function() {
-
-		});
-
-		it("The owner should be set", async function() {
-
-		});
-
-		it("The owner should be set", async function() {
+		it("Can't buy after sale closes", async function() {
 
 		});
 	});

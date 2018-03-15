@@ -35,6 +35,10 @@ contract Queue {
 		return pointer == 0;
 	}
 
+  function canBuy() constant returns (bool) {
+    return pointer > 1;
+  }   
+
 	/* Returns the address of the person in the front of the queue */
 	function getFirst() constant returns(address) {
 		return queue[0];

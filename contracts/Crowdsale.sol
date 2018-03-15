@@ -11,9 +11,9 @@ import './Token.sol';
 
 contract Crowdsale {
 
-	function Crowdsale(uint _initalTokens, uint _xrate, uint _timeLimit, uint _queueTime) public payable {
+	function Crowdsale(uint _initialTokens, uint _xrate, uint _timeLimit, uint _queueTime) public payable {
 	    owner = msg.sender;
-	    //totalSupply = _initalTokens;
+	    //totalSupply = _initialTokens;
 	    xrate = _xrate;
 	    startTime = now;
 	    endTime = startTime + _timeLimit;
